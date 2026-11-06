@@ -20,6 +20,9 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=config.BOT_TOKEN)
 dp = Dispatcher()
 
+# Множество для хранения ID пользователей, запустивших бота (для автосообщений)
+active_users = set()
+
 # --- МИКРО-ВЕБ-СЕРВЕР ДЛЯ RENDER (чтобы Web Service не падал по порту) ---
 
 async def handle_web(request):
@@ -36,6 +39,35 @@ async def start_web_server():
     site = web.TCPSite(runner, "0.0.0.0", port)
     await site.start()
     logging.info(f"Web server started on port {port}")
+
+# --- ФОНОВАЯ РАССЫЛКА КАЖДЫЕ 3 ЧАСА ---
+
+async def send_periodic_notifications():
+    """Фоновая задача для отправки автосообщений каждые 3 часа"""
+    while True:
+        await asyncio.sleep(3 * 3600)  # 3 часа в секундах
+        if not active_users:
+            continue
+            
+        kb = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="КУПИТЬ", callback_data="buy_access")]
+        ])
+        
+        text = (
+            "ПАК 630 ГБ\n\n"
+            f"ВСЕГО {config.STARS_AMOUNT} ЗВЕЗД ⭐"
+        )
+        
+        for user_id in list(active_users):
+            try:
+                await bot.send_message(
+                    chat_id=user_id,
+                    text=text,
+                    parse_mode="Markdown",
+                    reply_markup=kb
+                )
+            except Exception as e:
+                logging.error(f"Не удалось отправить автосообщение пользователю {user_id}: {e}")
 
 # --- ФУНКЦИИ CRYPTO PAY API ---
 
@@ -79,25 +111,22 @@ async def check_crypto_invoice(invoice_id: int):
 
 def main_keyboard() -> InlineKeyboardMarkup:
     kb = [
-        [InlineKeyboardButton(text="🟩 КУПИТЬ ВХОД", callback_data="buy_access")],
-        [InlineKeyboardButton(text="🟪 ЧТО ВХОДИТ? ↗️", url=config.TELEGRAPH_ARTICLE_LINK)],
-        [InlineKeyboardButton(text="🟥 НАЗАД", callback_data="main_menu")]
+        [InlineKeyboardButton(text="КУПИТЬ ВХОД", callback_data="buy_access")],
+        [InlineKeyboardButton(text="ЧТО ВХОДИТ? ↗️", url=config.TELEGRAPH_ARTICLE_LINK)]
     ]
     return InlineKeyboardMarkup(inline_keyboard=kb)
 
 def buy_keyboard() -> InlineKeyboardMarkup:
     kb = [
-        [InlineKeyboardButton(text=f"🟩 Stars {config.STARS_AMOUNT} ⭐", callback_data="pay_stars")],
-        [InlineKeyboardButton(text="🟪 CryptoBot (USDT)", callback_data="pay_crypto")],
-        [InlineKeyboardButton(text="🟥 НАЗАД", callback_data="main_menu")]
+        [InlineKeyboardButton(text=f"Stars {config.STARS_AMOUNT} ⭐", callback_data="pay_stars")],
+        [InlineKeyboardButton(text="CryptoBot (USDT)", callback_data="pay_crypto")]
     ]
     return InlineKeyboardMarkup(inline_keyboard=kb)
 
 def what_inside_keyboard() -> InlineKeyboardMarkup:
     kb = [
-        [InlineKeyboardButton(text="🟪 ИНСТРУКЦИЯ", callback_data="show_instruction")],
-        [InlineKeyboardButton(text="🟪 СКИНИТЬ ФОТО", callback_data="send_photo_sample")],
-        [InlineKeyboardButton(text="🟥 НАЗАД", callback_data="main_menu")]
+        [InlineKeyboardButton(text="ИНСТРУКЦИЯ", callback_data="show_instruction")],
+        [InlineKeyboardButton(text="СКИНИТЬ ФОТО", callback_data="send_photo_sample")]
     ]
     return InlineKeyboardMarkup(inline_keyboard=kb)
 
@@ -152,6 +181,8 @@ INSTRUCTION_TEXT = (
 
 @dp.message(CommandStart())
 async def cmd_start(message: types.Message):
+    # Запоминаем пользователя для рассылки
+    active_users.add(message.from_user.id)
     await message.answer(text=MAIN_TEXT, parse_mode="Markdown", reply_markup=main_keyboard())
 
 @dp.callback_query(F.data == "main_menu")
@@ -252,8 +283,11 @@ async def process_successful_payment(message: types.Message):
 # --- ЗАПУСК ---
 
 async def main():
-    # Одновременно запускаем веб-сервер для порта Render и поллинг бота
+    # Запускаем веб-сервер для порта Render
     await start_web_server()
+    # Запускаем фоновую задачу автосообщений каждые 3 часа
+    asyncio.create_task(send_periodic_notifications())
+    # Запуск поллинга бота
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
