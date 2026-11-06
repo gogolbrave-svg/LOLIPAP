@@ -1,11 +1,8 @@
 import logging
 import asyncio
-aiohttp_imported = False
-try:
-    import aiohttp
-except ImportError:
-    pass
-
+import os
+import aiohttp
+from aiohttp import web
 from aiogram import Bot, Dispatcher, F, types
 from aiogram.filters import CommandStart
 from aiogram.types import (
@@ -22,6 +19,23 @@ logging.basicConfig(level=logging.INFO)
 # Инициализация
 bot = Bot(token=config.BOT_TOKEN)
 dp = Dispatcher()
+
+# --- МИКРО-ВЕБ-СЕРВЕР ДЛЯ RENDER (чтобы Web Service не падал по порту) ---
+
+async def handle_web(request):
+    return web.Response(text="Bot is alive and running!")
+
+async def start_web_server():
+    app = web.Application()
+    app.add_routes([web.get('/', handle_web)])
+    runner = web.AppRunner(app)
+    await runner.setup()
+    
+    # Render передает свой порт через переменную окружения PORT, по умолчанию 10000
+    port = int(os.environ.get("PORT", 10000))
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    logging.info(f"Web server started on port {port}")
 
 # --- ФУНКЦИИ CRYPTO PAY API ---
 
@@ -58,7 +72,7 @@ async def check_crypto_invoice(invoice_id: int):
             result = await response.json()
             if result.get("ok") and result["result"]["items"]:
                 status = result["result"]["items"][0]["status"]
-                return status == "paid" # Возвращает True, если оплачено
+                return status == "paid"
             return False
 
 # --- КЛАВИАТУРЫ ---
@@ -95,7 +109,6 @@ def instruction_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=kb)
 
 def payment_crypto_keyboard(pay_url: str, invoice_id: int) -> InlineKeyboardMarkup:
-    """Клавиатура с живой ссылкой на оплату и кнопкой проверки"""
     kb = [
         [InlineKeyboardButton(text="💳 Оплатить в CryptoBot ↗️", url=pay_url)],
         [InlineKeyboardButton(text="🔄 Проверить оплату", callback_data=f"check_pay_{invoice_id}")],
@@ -173,16 +186,13 @@ async def cb_send_photo_sample(call: types.CallbackQuery):
 
 @dp.callback_query(F.data == "pay_crypto")
 async def process_pay_crypto(call: types.CallbackQuery):
-    """Генерация индивидуального счета на оплату USDT через API"""
     await call.answer("Создаю счет для оплаты...")
-    
     pay_url, invoice_id = await create_crypto_invoice(
         amount=config.PRICE_USD, 
         payload=str(call.from_user.id)
     )
-    
     if not pay_url:
-        await call.message.answer("❌ Ошибка создания счета. Попробуй позже или выберите другой способ оплаты.")
+        await call.message.answer("❌ Ошибка создания счета. Попробуй позже.")
         return
 
     text = (
@@ -190,7 +200,6 @@ async def process_pay_crypto(call: types.CallbackQuery):
         f"Сумма: **{config.PRICE_USD} USDT**\n"
         f"Нажми кнопку ниже для оплаты. После оплаты нажми «Проверить оплату»."
     )
-    
     await call.message.edit_text(
         text=text,
         parse_mode="Markdown",
@@ -199,11 +208,8 @@ async def process_pay_crypto(call: types.CallbackQuery):
 
 @dp.callback_query(F.data.startswith("check_pay_"))
 async def process_check_payment(call: types.CallbackQuery):
-    """Проверка статуса оплаты пользователем"""
     invoice_id = int(call.data.split("_")[2])
-    
     is_paid = await check_crypto_invoice(invoice_id)
-    
     if is_paid:
         await call.message.edit_text(
             f"✅ **Оплата успешно получена!**\n\n"
@@ -212,9 +218,9 @@ async def process_check_payment(call: types.CallbackQuery):
             disable_web_page_preview=True
         )
     else:
-        await call.answer("⏳ Оплата еще не поступила. Если ты уже оплатил, подожди пару секунд и попробуй снова.", show_alert=True)
+        await call.answer("⏳ Оплата еще не поступила. Попробуй снова через пару секунд.", show_alert=True)
 
-# --- ОПЛАТА ЗВЕЗДАМИ (TELEGRAM STARS) ---
+# --- ОПЛАТА ЗВЕЗДАМИ ---
 
 @dp.callback_query(F.data == "pay_stars")
 async def process_pay_stars(call: types.CallbackQuery):
@@ -243,9 +249,11 @@ async def process_successful_payment(message: types.Message):
         disable_web_page_preview=True
     )
 
-# --- ЗАПУСК БОТА ---
+# --- ЗАПУСК ---
 
 async def main():
+    # Одновременно запускаем веб-сервер для порта Render и поллинг бота
+    await start_web_server()
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
