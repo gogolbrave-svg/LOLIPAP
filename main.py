@@ -1,21 +1,20 @@
 import asyncio
 import hashlib
 import logging
+import os
 import sys
 from aiogram import Bot, Dispatcher, F, html
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
-from aiogram.foutils import *  # noqa
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
 
-# ==================== НАСТРОЙКИ ====================
-TELEGRAM_BOT_TOKEN = "ТВОЙ_ТОКЕН_БОТА_ОТ_BOTFATHER"
-
-# Данные из личного кабинета AnyPay
-ANYPAY_PROJECT_ID = "ТВОЙ_PROJECT_ID"
-ANYPAY_SECRET_KEY = "ТВОЙ_SECRET_KEY_1"
-# ===================================================
+# ==================== ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ ====================
+# Бот будет искать их в системе (или использовать заглушки для теста)
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "ТВОЙ_ТОКЕН_БОТА")
+ANYPAY_PROJECT_ID = os.getenv("ANYPAY_PROJECT_ID", "ТВОЙ_PROJECT_ID")
+ANYPAY_SECRET_KEY = os.getenv("ANYPAY_SECRET_KEY", "ТВОЙ_SECRET_KEY_1")
+# ==============================================================
 
 dp = Dispatcher()
 
@@ -96,7 +95,7 @@ async def process_service_choice(callback: CallbackQuery):
   if action in prices:
     amount, service_name = prices[action]
 
-    # Генерируем ссылку AnyPay (карты РФ, СБП, Казахстан, Украина, Беларусь)
+    # Генерируем ссылку AnyPay
     pay_url = generate_anypay_url(
         order_id=order_id, amount=amount, currency="RUB"
     )
@@ -125,7 +124,6 @@ async def process_service_choice(callback: CallbackQuery):
     )
 
   elif action == "buy_crypto":
-    # Меню для тех, кто платит криптой из других стран
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -189,7 +187,7 @@ async def back_to_start(callback: CallbackQuery):
 
 async def main() -> None:
   bot = Bot(
-      Token=TELEGRAM_BOT_TOKEN,
+      token=TELEGRAM_BOT_TOKEN,
       default=DefaultBotProperties(parse_mode=ParseMode.HTML),
   )
   await dp.start_polling(bot)
