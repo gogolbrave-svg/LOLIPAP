@@ -371,12 +371,12 @@ async def cmd_start(message: Message, state: FSMContext):
       inline_keyboard=[
           [
               InlineKeyboardButton(
-                  text="🛒 Записаться на тренировку", callback_data="start_order"
+                  text="🏋️ Записаться на тренировку", callback_data="start_order"
               )
           ],
           [
               InlineKeyboardButton(
-                  text="📦 Мои абонементы", callback_data="my_orders"
+                  text="📋 Мои абонементы", callback_data="my_orders"
               ),
               InlineKeyboardButton(
                   text="📊 Наша репутация", callback_data="reputation"
@@ -393,15 +393,10 @@ async def cmd_start(message: Message, state: FSMContext):
                   text="💬 Поддержка", callback_data="contact_admin"
               )
           ],
-          [
-              InlineKeyboardButton(
-                  text="💼 Стать тренером", callback_data="start_vacancy"
-              )
-          ],
       ]
   )
   text = (
-      "<b>Добро пожаловать в клуб «PRO СПОРТ»!</b> 🏅\n\n"
+      "<b>Добро пожаловать в клуб «PRO СПОРТ»!</b> 🏆\n\n"
       "Профессиональные персональные тренировки, фитнес-программы, составление планов питания "
       "и работа с сертифицированными тренерами.\n\n"
       "Выберите нужный пункт в меню ниже:"
@@ -422,11 +417,11 @@ async def cmd_my_orders(message: Message):
 
   if not orders:
     text = (
-        "📦 <b>Мои абонементы</b>\n\nУ вас пока нет активных или завершенных"
+        "📋 <b>Мои абонементы</b>\n\nУ вас пока нет активных или завершенных"
         " абонементов на тренировки."
     )
   else:
-    text = "📦 <b>Ваши абонементы:</b>\n\n"
+    text = "📋 <b>Ваши абонементы:</b>\n\n"
     for idx, ord_data in enumerate(orders, 1):
       text += (
           f"<b>Абонемент #{idx}</b>\n• Программа: {ord_data['service_name']}\n• Сумма:"
@@ -675,11 +670,11 @@ async def show_my_orders(callback: CallbackQuery):
 
   if not orders:
     text = (
-        "📦 <b>Мои абонементы</b>\n\nУ вас пока нет активных или завершенных"
+        "📋 <b>Мои абонементы</b>\n\nУ вас пока нет активных или завершенных"
         " абонементов."
     )
   else:
-    text = "📦 <b>Ваши абонементы:</b>\n\n"
+    text = "📋 <b>Ваши абонементы:</b>\n\n"
     for idx, ord_data in enumerate(orders, 1):
       text += (
           f"<b>Абонемент #{idx}</b>\n• Программа: {ord_data['service_name']}\n• Сумма:"
@@ -710,12 +705,12 @@ async def back_home(callback: CallbackQuery, state: FSMContext):
       inline_keyboard=[
           [
               InlineKeyboardButton(
-                  text="🛒 Записаться на тренировку", callback_data="start_order"
+                  text="🏋️ Записаться на тренировку", callback_data="start_order"
               )
           ],
           [
               InlineKeyboardButton(
-                  text="📦 Мои абонементы", callback_data="my_orders"
+                  text="📋 Мои абонементы", callback_data="my_orders"
               ),
               InlineKeyboardButton(
                   text="📊 Наша репутация", callback_data="reputation"
@@ -732,15 +727,10 @@ async def back_home(callback: CallbackQuery, state: FSMContext):
                   text="💬 Поддержка", callback_data="contact_admin"
               )
           ],
-          [
-              InlineKeyboardButton(
-                  text="💼 Стать тренером", callback_data="start_vacancy"
-              )
-          ],
       ]
   )
   text = (
-      "<b>Добро пожаловать в клуб «PRO СПОРТ»!</b> 🏅\n\n"
+      "<b>Добро пожаловать в клуб «PRO СПОРТ»!</b> 🏆\n\n"
       "Профессиональные персональные тренировки, фитнес-программы, составление планов питания "
       "и работа с сертифицированными тренерами.\n\n"
       "Выберите нужный пункт в меню ниже:"
@@ -811,13 +801,13 @@ async def process_target_count(callback: CallbackQuery, state: FSMContext):
       inline_keyboard=[
           [
               InlineKeyboardButton(
-                  text="🟢 Функциональный тренинг (10$)",
+                  text="🏋️‍♂️ Функциональный тренинг (10$)",
                   callback_data="srv_Функциональный_тренинг_10",
               )
           ],
           [
               InlineKeyboardButton(
-                  text="🔥 Кардио и выносливость (20$)",
+                  text="🏃‍♂️ Кардио и выносливость (20$)",
                   callback_data="srv_Кардио_и_выносливость_20",
               )
           ],
@@ -828,37 +818,37 @@ async def process_target_count(callback: CallbackQuery, state: FSMContext):
           ],
           [
               InlineKeyboardButton(
-                  text="🧎‍♂️ Растяжка и гибкость (70$)",
+                  text="🧘‍♂️ Растяжка и гибкость (70$)",
                   callback_data="srv_Растяжка_и_гибкость_70",
               )
           ],
           [
               InlineKeyboardButton(
-                  text="🦴 Коррекция осанки (90$)",
+                  text="📐 Коррекция осанки (90$)",
                   callback_data="srv_Коррекция_осанки_90",
               )
           ],
           [
               InlineKeyboardButton(
-                  text="🦿 Реабилитационный фитнес (110$)",
+                  text="🩹 Реабилитационный фитнес (110$)",
                   callback_data="srv_Реабилитационный_фитнес_110",
               )
           ],
           [
               InlineKeyboardButton(
-                  text="🏥 Спортивный массаж (130$)",
+                  text="💆‍♂️ Спортивный массаж (130$)",
                   callback_data="srv_Спортивный_массаж_130",
               )
           ],
           [
               InlineKeyboardButton(
-                  text="🪓 Набор мышечной массы (150$)",
+                  text="💪 Набор мышечной массы (150$)",
                   callback_data="srv_Набор_мышечной_массы_150",
               )
           ],
           [
               InlineKeyboardButton(
-                  text="🏹 Жиросжигание и сушка (180$)",
+                  text="🍏 Жиросжигание и сушка (180$)",
                   callback_data="srv_Жиросжигание_и_сушка_180",
               )
           ],
@@ -1824,430 +1814,6 @@ async def process_receipt_invalid(message: Message):
 
 
 # =====================================================================
-# === АНКЕТА ДЛЯ ТРУДОУСТРОЙСТВА ТРЕНЕРОМ ==============================
-# =====================================================================
-
-
-@router.callback_query(F.data == "start_vacancy")
-async def process_start_vacancy(callback: CallbackQuery, state: FSMContext):
-  await state.clear()
-  await state.set_state(VacancyForm.country)
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[
-          [
-              InlineKeyboardButton(
-                  text="🇺🇦 Украина", callback_data="vcountry_Ukraine"
-              ),
-              InlineKeyboardButton(
-                  text="🇷🇺 Россия", callback_data="vcountry_Russia"
-              ),
-          ],
-          [
-              InlineKeyboardButton(
-                  text="🇧🇾 Беларусь", callback_data="vcountry_Belarus"
-              ),
-              InlineKeyboardButton(
-                  text="🇰🇿 Казахстан", callback_data="vcountry_Kazakhstan"
-              ),
-          ],
-          [
-              InlineKeyboardButton(
-                  text="🇲🇩 Молдова", callback_data="vcountry_Moldova"
-              ),
-              InlineKeyboardButton(
-                  text="🇺🇿 Узбекистан", callback_data="vcountry_Uzbekistan"
-              ),
-          ],
-          [
-              InlineKeyboardButton(
-                  text="🇰🇬 Кыргызстан", callback_data="vcountry_Kyrgyzstan"
-              ),
-              InlineKeyboardButton(
-                  text="🇹🇯 Таджикистан", callback_data="vcountry_Tajikistan"
-              ),
-          ],
-          [
-              InlineKeyboardButton(
-                  text="🇬🇪 Грузия", callback_data="vcountry_Georgia"
-              ),
-              InlineKeyboardButton(
-                  text="🇦🇲 Армения", callback_data="vcountry_Armenia"
-              ),
-          ],
-          [
-              InlineKeyboardButton(
-                  text="🇦🇿 Азербайджан", callback_data="vcountry_Azerbaijan"
-              )
-          ],
-          [InlineKeyboardButton(text="⬅️ Отмена", callback_data="back_home")],
-      ]
-  )
-  await callback.message.edit_text(
-      "💼 <b>АНКЕТА ТРЕНЕРА / ИНСТРУКТОРА</b>\n\n<b>Шаг 1 из 8: Страна проживания</b>\nВыберите"
-      " вашу страну из списка:",
-      reply_markup=keyboard,
-      parse_mode="HTML",
-  )
-  await callback.answer()
-
-
-@router.callback_query(VacancyForm.country, F.data.startswith("vcountry_"))
-async def process_vacancy_country(callback: CallbackQuery, state: FSMContext):
-  c_code = callback.data.split("_")[1]
-  names = {
-      "Ukraine": "Украина",
-      "Russia": "Россия",
-      "Belarus": "Беларусь",
-      "Kazakhstan": "Казахстан",
-      "Moldova": "Молдова",
-      "Uzbekistan": "Узбекистан",
-      "Kyrgyzstan": "Кыргызстан",
-      "Tajikistan": "Таджикистан",
-      "Georgia": "Грузия",
-      "Armenia": "Армения",
-      "Azerbaijan": "Азербайджан",
-  }
-  selected = names.get(c_code, c_code)
-  curr_info = COUNTRY_CURRENCIES.get(
-      selected, {"code": "USD", "symbol": "USD"}
-  )
-  await state.update_data(
-      country=selected,
-      curr_code=curr_info["code"],
-      curr_symbol=curr_info["symbol"],
-  )
-  await state.set_state(VacancyForm.city)
-  await callback.message.edit_text(
-      f"💼 <b>АНКЕТА ТРЕНЕРА</b>\n\nСтрана: <b>{selected}</b>\n\n<b>Шаг 2 из"
-      " 8: Город</b>\nВведите название вашего города текстом:",
-      parse_mode="HTML",
-  )
-  await callback.answer()
-
-
-@router.message(VacancyForm.city, F.text)
-async def process_vacancy_city(message: Message, state: FSMContext):
-  await state.update_data(city=message.text.strip())
-  await state.set_state(VacancyForm.name)
-  await message.answer(
-      "💼 <b>АНКЕТА ТРЕНЕРА</b>\n\n<b>Шаг 3 из 8: Имя и Фамилия</b>\nВведите ваши данные:",
-      parse_mode="HTML",
-  )
-
-
-@router.message(VacancyForm.name, F.text)
-async def process_vacancy_name(message: Message, state: FSMContext):
-  await state.update_data(name=message.text.strip())
-  await state.set_state(VacancyForm.age)
-  await message.answer(
-      "💼 <b>АНКЕТА ТРЕНЕРА</b>\n\n<b>Шаг 4 из 8: Возраст</b>\nУкажите сколько"
-      " вам лет:",
-      parse_mode="HTML",
-  )
-
-
-@router.message(VacancyForm.age, F.text)
-async def process_vacancy_age(message: Message, state: FSMContext):
-  await state.update_data(age=message.text.strip())
-  await state.set_state(VacancyForm.parameters)
-  await message.answer(
-      "💼 <b>АНКЕТА ТРЕНЕРА</b>\n\n<b>Шаг 5 из 8: Специализация</b>\nУкажите"
-      " ваше направление (например: <i>кроссфит, тяжелая атлетика, йога, нутрициология</i>):",
-      parse_mode="HTML",
-  )
-
-
-@router.message(VacancyForm.parameters, F.text)
-async def process_vacancy_parameters(message: Message, state: FSMContext):
-  await state.update_data(parameters=message.text.strip())
-  await state.set_state(VacancyForm.sports_exp)
-  await message.answer(
-      "💼 <b>АНКЕТА ТРЕНЕРА</b>\n\n<b>Шаг 6 из 8: Спортивные достижения и сертификаты</b>\nКаковы ваши успехи в спорте, есть ли профильное образование и сертификаты?",
-      parse_mode="HTML",
-  )
-
-
-@router.message(VacancyForm.sports_exp, F.text)
-async def process_vacancy_sports_exp(message: Message, state: FSMContext):
-  await state.update_data(sports_exp=message.text.strip())
-  await state.set_state(VacancyForm.experience)
-  await message.answer(
-      "💼 <b>АНКЕТА ТРЕНЕРА</b>\n\n<b>Шаг 7 из 8: Опыт работы тренером</b>\nБыл ли у вас"
-      " опыт работы в фитнес-клубах или онлайн? Кратко опишите стаж:",
-      parse_mode="HTML",
-  )
-
-
-@router.message(VacancyForm.experience, F.text)
-async def process_vacancy_experience(message: Message, state: FSMContext):
-  await state.update_data(experience=message.text.strip())
-  await state.set_state(VacancyForm.photo)
-  await message.answer(
-      "💼 <b>АНКЕТА ТРЕНЕРА</b>\n\n<b>Шаг 8 из 8: Фото сертификатов или портфолио</b>\n📸 Прикрепите фото ваших сертификатов, дипломов или рабочее фото.",
-      parse_mode="HTML",
-  )
-
-
-@router.message(VacancyForm.photo, F.photo)
-async def process_vacancy_photo(message: Message, state: FSMContext):
-  photo_id = message.photo[-1].file_id
-  await state.update_data(photo=photo_id)
-
-  data = await state.get_data()
-  curr_code = data.get("curr_code", "USD")
-  curr_symbol = data.get("curr_symbol", "USD")
-  rate = await get_exchange_rate(curr_code)
-  deposit_usd = 50
-  local_amount = round(deposit_usd * rate)
-  local_str = f"{local_amount:,}".replace(",", " ")
-
-  text = (
-      "✅ <b>Анкета тренера успешно заполнена!</b>\n\n"
-      "Для верификации аккаунта в системе клуба и получения доступа к клиентской базе необходимо внести страховой взнос в"
-      " размере <b>50$</b> <i>(≈ "
-      f"{local_str} {curr_symbol})</i>.\n\n"
-      "⚠️ Взнос возвратный. После проверки с вами свяжется старший тренер."
-  )
-
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[
-          [
-              InlineKeyboardButton(
-                  text="💳 Внести взнос (Оплатить 50$)",
-                  callback_data="vacancy_pay",
-              )
-          ]
-      ]
-  )
-  await message.answer(text, reply_markup=keyboard, parse_mode="HTML")
-
-
-@router.message(VacancyForm.photo, ~F.photo)
-async def process_vacancy_photo_invalid(message: Message):
-  await message.answer(
-      "⚠️ Пожалуйста, отправьте именно <b>фотографию</b> (картинкой), текстовые"
-      " сообщения не принимаются!"
-  )
-
-
-@router.callback_query(F.data == "vacancy_pay")
-async def process_vacancy_pay(callback: CallbackQuery, state: FSMContext):
-  data = await state.get_data()
-  curr_code = data.get("curr_code", "USD")
-  curr_symbol = data.get("curr_symbol", "USD")
-  rate = await get_exchange_rate(curr_code)
-  deposit_usd = 50
-  local_amount = round(deposit_usd * rate)
-  local_str = f"{local_amount:,}".replace(",", " ")
-
-  text = (
-      "💳 <b>ОПЛАТА ВЗНОСА ДЛЯ ТРЕНЕРОВ</b>\n\n"
-      f"• <b>Сумма к оплате:</b> {deposit_usd}$ <i>(≈ {local_str}"
-      f" {curr_symbol})</i>\n"
-      "• <b>Выберите способ оплаты:</b>"
-  )
-
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[
-          [
-              InlineKeyboardButton(
-                  text="🔴 USDT (TRC-20)", callback_data="vpay_trc20"
-              )
-          ],
-          [
-              InlineKeyboardButton(
-                  text="🟢 USDT (BEP-20)", callback_data="vpay_bep20"
-              )
-          ],
-          [
-              InlineKeyboardButton(
-                  text="🔵 TON", callback_data="vpay_ton"
-              )
-          ],
-          [
-              InlineKeyboardButton(
-                  text="🟠 Bitcoin (BTC)", callback_data="vpay_btc"
-              )
-          ],
-          [
-              InlineKeyboardButton(
-                  text="⬅️ На главную", callback_data="back_home"
-              )
-          ],
-      ]
-  )
-  await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="HTML")
-  await callback.answer()
-
-
-@router.callback_query(F.data == "vpay_trc20")
-async def vpay_trc20(callback: CallbackQuery):
-  text = (
-      "💳 <b>ОПЛАТА ВЗНОСА (TRC-20)</b>\n\n"
-      "• <b>Сумма:</b> 50$\n"
-      "• <b>Сеть:</b> TRC-20\n"
-      "• <b>Реквизиты для перевода:</b>\n"
-      "<code>TYd1ekJgTHnFfgAVYXsi7689GaG5oZN3Xe</code>\n\n"
-      "⚠️ <b>ВНИМАНИЕ!</b>\n"
-      "После перевода обязательно нажмите кнопку ниже и отправьте скриншот"
-      " чека!"
-  )
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[
-          [
-              InlineKeyboardButton(
-                  text="✅ Я оплатил(-а), прикрепить чек",
-                  callback_data="vacancy_ask_receipt",
-              )
-          ]
-      ]
-  )
-  await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="HTML")
-  await callback.answer()
-
-
-@router.callback_query(F.data == "vpay_bep20")
-async def vpay_bep20(callback: CallbackQuery):
-  text = (
-      "💳 <b>ОПЛАТА ВЗНОСА (BEP-20)</b>\n\n"
-      "• <b>Сумма:</b> 50$\n"
-      "• <b>Сеть:</b> BEP-20\n"
-      "• <b>Реквизиты для перевода:</b>\n"
-      "<code>0x0A6C6634f8FD920a5E9E0d241CD46d6C15377f39</code>\n\n"
-      "⚠️ <b>ВНИМАНИЕ!</b>\n"
-      "После перевода обязательно нажмите кнопку ниже и отправьте скриншот"
-      " чека!"
-  )
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[
-          [
-              InlineKeyboardButton(
-                  text="✅ Я оплатил(-а), прикрепить чек",
-                  callback_data="vacancy_ask_receipt",
-              )
-          ]
-      ]
-  )
-  await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="HTML")
-  await callback.answer()
-
-
-@router.callback_query(F.data == "vpay_ton")
-async def vpay_ton(callback: CallbackQuery):
-  text = (
-      "💳 <b>ОПЛАТА ВЗНОСА (TON)</b>\n\n"
-      "• <b>Сумма:</b> 50$\n"
-      "• <b>Сеть:</b> TON\n"
-      "• <b>Реквизиты для перевода:</b>\n"
-      "<code>UQDwk7PZoWr0zHv-BItBEGxnq4uyj81z6BlIw74heDgF-Shd</code>\n\n"
-      "⚠️ <b>ВНИМАНИЕ!</b>\n"
-      "После перевода обязательно нажмите кнопку ниже и отправьте скриншот"
-      " чека!"
-  )
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[
-          [
-              InlineKeyboardButton(
-                  text="✅ Я оплатил(-а), прикрепить чек",
-                  callback_data="vacancy_ask_receipt",
-              )
-          ]
-      ]
-  )
-  await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="HTML")
-  await callback.answer()
-
-
-@router.callback_query(F.data == "vpay_btc")
-async def vpay_btc(callback: CallbackQuery):
-  text = (
-      "💳 <b>ОПЛАТА ВЗНОСА (BITCOIN)</b>\n\n"
-      "• <b>Сумма:</b> 50$\n"
-      "• <b>Сеть:</b> Bitcoin\n"
-      "• <b>Реквизиты для перевода:</b>\n"
-      "<code>bc1qj7xy0645vcza7l3et5s8nuahllua9a439c0795</code>\n\n"
-      "⚠️ <b>ВНИМАНИЕ!</b>\n"
-      "После перевода обязательно нажмите кнопку ниже и отправьте скриншот"
-      " чека!"
-  )
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[
-          [
-              InlineKeyboardButton(
-                  text="✅ Я оплатил(-а), прикрепить чек",
-                  callback_data="vacancy_ask_receipt",
-              )
-          ]
-      ]
-  )
-  await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="HTML")
-  await callback.answer()
-
-
-@router.callback_query(F.data == "vacancy_ask_receipt")
-async def vacancy_ask_receipt(callback: CallbackQuery, state: FSMContext):
-  await state.set_state(VacancyForm.receipt)
-  text = (
-      "🧾 <b>Подтверждение взноса</b>\n\n"
-      "Пожалуйста, отправьте в чат <b>фотографию или скриншот чека</b> об"
-      " успешном переводе."
-  )
-  await callback.message.edit_text(text, parse_mode="HTML")
-  await callback.answer()
-
-
-@router.message(VacancyForm.receipt, F.photo)
-async def process_vacancy_receipt(message: Message, state: FSMContext):
-  user = message.from_user
-  user_info = f"@{user.username}" if user.username else f"ID: {user.id}"
-  if user.full_name:
-    user_info = f"{user.full_name} ({user_info})"
-
-  admin_vacancy_text = (
-      f"💼 <b>Новый взнос от тренера!</b>\n\n"
-      f"• От кого: {user_info}\n"
-      f"• User ID: <code>{user.id}</code>\n"
-      f"• Чек прикреплен ниже."
-  )
-  if ADMIN_ID:
-    try:
-      photo_id = message.photo[-1].file_id
-      await message.bot.send_photo(
-          chat_id=ADMIN_ID,
-          photo=photo_id,
-          caption=admin_vacancy_text,
-          parse_mode="HTML",
-      )
-    except Exception as e:
-      logger.error(f"Не удалось отправить залог вакансии админу: {e}")
-
-  final_text = (
-      "✅ <b>Анкета тренера и чек успешно приняты!</b>\n\n"
-      "Ваши данные переданы руководству клуба на проверку. В ближайшее время с вами"
-      " свяжется администратор."
-  )
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[
-          [
-              InlineKeyboardButton(
-                  text="🏠 На главную", callback_data="back_home"
-              )
-          ]
-      ]
-  )
-  await message.answer(final_text, reply_markup=keyboard, parse_mode="HTML")
-  await state.clear()
-
-
-@router.message(VacancyForm.receipt, ~F.photo)
-async def process_vacancy_receipt_invalid(message: Message):
-  await message.answer(
-      "⚠️ Пожалуйста, отправьте именно <b>фотографию или скриншот чека</b>"
-      " (картинкой)!"
-  )
-
-
-# =====================================================================
 # === ПОКУПКА РЕКЛАМЫ (СОТРУДНИЧЕСТВО) =================================
 # =====================================================================
 
@@ -2433,7 +1999,7 @@ async def process_ad_pay_select(callback: CallbackQuery, state: FSMContext):
                   text="🟠 Bitcoin (BTC)", callback_data="adpay_btc"
               )
           ],
-          [InlineKeyboardButton(text="⬅️ На главную", callback_data="back_home")],
+          [InlineKeyboardButton(text="🏠 На главную", callback_data="back_home")],
       ]
   )
   await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="HTML")
@@ -2644,4 +2210,4 @@ async def main():
 
 
 if __name__ == "__main__":
-  asyncio.run(main())
+  asyncio.main(main()) if hasattr(asyncio, "main") else asyncio.run(main())
