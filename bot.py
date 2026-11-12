@@ -146,7 +146,7 @@ async def scheduled_broadcast(bot: Bot):
 async def delayed_abandoned_cart_reminder(bot: Bot, user_id: int):
   try:
     await asyncio.sleep(1800)
-    if user_id in ABANDONED_CHECKOUTS and ABANDONED_CHECKOUTS[user_id]:
+    if user_id in ABANDONED_CHECKOUTS:
       reminder_text = (
           "👋 <b>Завершите оформление заказа!</b>\n\n"
           "Мы заметили, что вы остановились на этапе оплаты, но так и не завершили заказ.\n"
@@ -224,12 +224,8 @@ async def run_payment_timer(bot: Bot, chat_id: int, message_id: int, base_text: 
 
 # === ПОЛНОЦЕННАЯ ИНТЕГРАЦИЯ SAFARIPAY API С РЕКВИЗИТАМИ И МЕРЧАНТОМ ===
 async def create_safaripay_invoice(amount: float, method: str) -> str:
-  """
-  Создает инвойс через Safari Pay API, используя SAFARIPAY_API_KEY и SAFARIPAY_MERCHANT_ID.
-  method может быть 'card', 'sbp', 'stars' и т.д.
-  """
   if not SAFARIPAY_API_KEY:
-    logger.error("❌ SAFARIPAY_API_KEY не задан в переменнах окружения (.env)!")
+    logger.error("❌ SAFARIPAY_API_KEY не задан в переменных окружения (.env)!")
     return ""
 
   url = "https://api.safaripay.pro/v1/invoices"
@@ -238,7 +234,6 @@ async def create_safaripay_invoice(amount: float, method: str) -> str:
       "Content-Type": "application/json"
   }
   
-  # Передаем merchant_id из .env, если он используется платформой
   payload = {
       "amount": float(amount),
       "method": method,
@@ -252,7 +247,6 @@ async def create_safaripay_invoice(amount: float, method: str) -> str:
         async with session.post(f"{url}?wait=20", json=payload, headers=headers, timeout=15) as resp:
           if resp.status in (200, 201):
             data = await resp.json()
-            # Проверяем различные варианты ключей ответа API (link, url, pay_url)
             link = data.get("link") or data.get("url") or data.get("pay_url", "")
             if link:
               return link
@@ -667,7 +661,11 @@ async def back_home(callback: CallbackQuery, state: FSMContext):
   if task_key in PAYMENT_TIMERS:
     PAYMENT_TIMERS[task_key].cancel()
     del PAYMENT_TIMERS[task_key]
-  ABANDONED_CHECKOUTS.pop(user_id, None)
+  
+  if user_id in ABANDONED_CHECKOUTS:
+    ABANDONED_CHECKOUTS[user_id].cancel()
+    ABANDONED_CHECKOUTS.pop(user_id, None)
+    
   SAFARIPAY_PREFETCH_CACHE.pop(user_id, None)
 
   await state.clear()
@@ -716,7 +714,11 @@ async def process_start_order(callback: CallbackQuery, state: FSMContext):
   if task_key in PAYMENT_TIMERS:
     PAYMENT_TIMERS[task_key].cancel()
     del PAYMENT_TIMERS[task_key]
-  ABANDONED_CHECKOUTS.pop(user_id, None)
+    
+  if user_id in ABANDONED_CHECKOUTS:
+    ABANDONED_CHECKOUTS[user_id].cancel()
+    ABANDONED_CHECKOUTS.pop(user_id, None)
+    
   SAFARIPAY_PREFETCH_CACHE.pop(user_id, None)
 
   await state.set_state(OrderForm.service)
@@ -913,7 +915,7 @@ async def process_urgency(callback: CallbackQuery, state: FSMContext):
   await callback.answer()
 
 
-# === ПЕРЕХОД К ВЫБОРУ ОПЛАТЫ С ПРВЕТЧЕМ SAFARIPAY ===
+# === ПЕРЕХОД К ВЫБОРУ ОПЛАТЫ С ПРЕФЕТЧЕМ SAFARIPAY ===
 @router.callback_query(F.data == "go_to_payment")
 async def process_go_to_payment(callback: CallbackQuery, state: FSMContext):
   user_id = callback.from_user.id
@@ -930,7 +932,6 @@ async def process_go_to_payment(callback: CallbackQuery, state: FSMContext):
   rub_amount = max(100, int(total_price * 90))
   stars_amount = max(1, rub_amount)
 
-  # Запуск параллельного префетча для быстрой генерации ссылок SafariPay (Карта/СБП и Звезды)
   SAFARIPAY_PREFETCH_CACHE[user_id] = {
       "card": asyncio.create_task(create_safaripay_invoice(rub_amount, "card")),
       "stars": asyncio.create_task(create_safaripay_invoice(stars_amount, "stars"))
@@ -990,7 +991,10 @@ async def process_pay_card(callback: CallbackQuery, state: FSMContext):
   if task_key in PAYMENT_TIMERS:
     PAYMENT_TIMERS[task_key].cancel()
     del PAYMENT_TIMERS[task_key]
-  ABANDONED_CHECKOUTS.pop(user_id, None)
+  
+  if user_id in ABANDONED_CHECKOUTS:
+    ABANDONED_CHECKOUTS[user_id].cancel()
+    ABANDONED_CHECKOUTS.pop(user_id, None)
 
   data = await state.get_data()
   total_price = data.get("total_price", 150)
@@ -1063,7 +1067,10 @@ async def process_pay_safari_stars(callback: CallbackQuery, state: FSMContext):
   if task_key in PAYMENT_TIMERS:
     PAYMENT_TIMERS[task_key].cancel()
     del PAYMENT_TIMERS[task_key]
-  ABANDONED_CHECKOUTS.pop(user_id, None)
+    
+  if user_id in ABANDONED_CHECKOUTS:
+    ABANDONED_CHECKOUTS[user_id].cancel()
+    ABANDONED_CHECKOUTS.pop(user_id, None)
 
   data = await state.get_data()
   total_price = data.get("total_price", 150)
@@ -1180,7 +1187,10 @@ async def process_crypto_expert(callback: CallbackQuery, state: FSMContext):
   if task_key in PAYMENT_TIMERS:
     PAYMENT_TIMERS[task_key].cancel()
     del PAYMENT_TIMERS[task_key]
-  ABANDONED_CHECKOUTS.pop(user_id, None)
+    
+  if user_id in ABANDONED_CHECKOUTS:
+    ABANDONED_CHECKOUTS[user_id].cancel()
+    ABANDONED_CHECKOUTS.pop(user_id, None)
 
   text = (
       "💳 <b>ВЫБОР КРИПТОВАЛЮТНОЙ СЕТИ</b>\n\n"
@@ -1395,7 +1405,9 @@ async def ask_for_receipt(callback: CallbackQuery, state: FSMContext):
 async def process_receipt_photo(message: Message, state: FSMContext):
   user = message.from_user
   user_id = user.id
-  ABANDONED_CHECKOUTS.pop(user_id, None)
+  if user_id in ABANDONED_CHECKOUTS:
+    ABANDONED_CHECKOUTS[user_id].cancel()
+    ABANDONED_CHECKOUTS.pop(user_id, None)
 
   data = await state.get_data()
 
@@ -1803,6 +1815,7 @@ async def process_ad_receipt(message: Message, state: FSMContext):
           chat_id=ADMIN_ID,
           photo=photo_id,
           caption=admin_ad_text,
+          parse_mode="HTML",
       )
     except Exception as e:
       logger.error(f"Не удалось отправить оплату рекламы админу: {e}")
@@ -1860,4 +1873,4 @@ async def main():
 
 
 if __name__ == "__main__":
-  asyncio.main(main()) if hasattr(asyncio, "main") else asyncio.run(main())
+  asyncio.run(main())
