@@ -46,16 +46,6 @@ class OrderForm(StatesGroup):
   receipt = State()
 
 
-class AdForm(StatesGroup):
-  platform = State()
-  duration = State()
-  niche = State()
-  link = State()
-  creative = State()
-  network = State()
-  receipt = State()
-
-
 class SupportForm(StatesGroup):
   reason = State()
   photo = State()
@@ -255,7 +245,6 @@ async def cmd_start(message: Message, state: FSMContext):
               InlineKeyboardButton(text="📋 Мои заказы", callback_data="my_orders"),
               InlineKeyboardButton(text="📊 Наша репутация", callback_data="reputation"),
           ],
-          [InlineKeyboardButton(text="🤝 Сотрудничество (Реклама)", callback_data="start_ads")],
           [InlineKeyboardButton(text="💬 Поддержка", callback_data="contact_admin")],
       ]
   )
@@ -302,16 +291,15 @@ async def cmd_order(message: Message, state: FSMContext):
   
   keyboard = InlineKeyboardMarkup(
       inline_keyboard=[
-          [InlineKeyboardButton(text="🎨 UI/UX Дизайн макета (10$)", callback_data="srv_UI_UX_Дизайн_макета_10")],
-          [InlineKeyboardButton(text="🌐 Лендинг / Сайт-визитка (20$)", callback_data="srv_Лендинг_Сайт_визитка_20")],
-          [InlineKeyboardButton(text="🤖 Telegram Бот под ключ (50$)", callback_data="srv_Telegram_Бот_под_ключ_50")],
-          [InlineKeyboardButton(text="⚙️ Автоматизация процессов (70$)", callback_data="srv_Автоматизация_процессов_70")],
-          [InlineKeyboardButton(text="⚡ Telegram Mini App (90$)", callback_data="srv_Telegram_Mini_App_90")],
-          [InlineKeyboardButton(text="🛍 Интернет-магазин (110$)", callback_data="srv_Интернет_магазин_110")],
-          [InlineKeyboardButton(text="📊 CRM-система под ключ (130$)", callback_data="srv_CRM_система_под_ключ_130")],
-          [InlineKeyboardButton(text="🛡 Защита и безопасность (150$)", callback_data="srv_Защита_и_безопасность_150")],
-          [InlineKeyboardButton(text="🚀 SEO и Продвижение (180$)", callback_data="srv_SEO_и_Продвижение_180")],
-          [InlineKeyboardButton(text="💎 Комплексный проект VIP (200$)", callback_data="srv_Комплексный_проект_VIP_200")],
+          [InlineKeyboardButton(text="🎨 UI/UX Дизайн макета (20$)", callback_data="srv_UI_UX_Дизайн_макета_20")],
+          [InlineKeyboardButton(text="🌐 Лендинг / Сайт-визитка (50$)", callback_data="srv_Лендинг_Сайт_визитка_50")],
+          [InlineKeyboardButton(text="🤖 Telegram Бот под ключ (80$)", callback_data="srv_Telegram_Бот_под_ключ_80")],
+          [InlineKeyboardButton(text="⚙️ Автоматизация процессов (120$)", callback_data="srv_Автоматизация_процессов_120")],
+          [InlineKeyboardButton(text="⚡ Telegram Mini App (150$)", callback_data="srv_Telegram_Mini_App_150")],
+          [InlineKeyboardButton(text="🛍 Интернет-магазин (200$)", callback_data="srv_Интернет_магазин_200")],
+          [InlineKeyboardButton(text="📊 CRM-система под ключ (300$)", callback_data="srv_CRM_система_под_ключ_300")],
+          [InlineKeyboardButton(text="🛡 Защита и безопасность (500$)", callback_data="srv_Защита_и_безопасность_500")],
+          [InlineKeyboardButton(text="🚀 SEO и Продвижение (1000$)", callback_data="srv_SEO_и_Продвижение_1000")],
           [InlineKeyboardButton(text="⬅️ На главную", callback_data="back_home")],
       ]
   )
@@ -520,7 +508,6 @@ async def back_home(callback: CallbackQuery, state: FSMContext):
               InlineKeyboardButton(text="📋 Мои заказы", callback_data="my_orders"),
               InlineKeyboardButton(text="📊 Наша репутация", callback_data="reputation"),
           ],
-          [InlineKeyboardButton(text="🤝 Сотрудничество (Реклама)", callback_data="start_ads")],
           [InlineKeyboardButton(text="💬 Поддержка", callback_data="contact_admin")],
       ]
   )
@@ -547,16 +534,15 @@ async def process_start_order(callback: CallbackQuery, state: FSMContext):
   await state.set_state(OrderForm.service)
   keyboard = InlineKeyboardMarkup(
       inline_keyboard=[
-          [InlineKeyboardButton(text="🎨 UI/UX Дизайн макета (10$)", callback_data="srv_UI_UX_Дизайн_макета_10")],
-          [InlineKeyboardButton(text="🌐 Лендинг / Сайт-визитка (20$)", callback_data="srv_Лендинг_Сайт_визитка_20")],
-          [InlineKeyboardButton(text="🤖 Telegram Бот под ключ (50$)", callback_data="srv_Telegram_Бот_под_ключ_50")],
-          [InlineKeyboardButton(text="⚙️ Автоматизация процессов (70$)", callback_data="srv_Автоматизация_процессов_70")],
-          [InlineKeyboardButton(text="⚡ Telegram Mini App (90$)", callback_data="srv_Telegram_Mini_App_90")],
-          [InlineKeyboardButton(text="🛍 Интернет-магазин (110$)", callback_data="srv_Интернет_магазин_110")],
-          [InlineKeyboardButton(text="📊 CRM-система под ключ (130$)", callback_data="srv_CRM_система_под_ключ_130")],
-          [InlineKeyboardButton(text="🛡 Защита и безопасность (150$)", callback_data="srv_Защита_и_безопасность_150")],
-          [InlineKeyboardButton(text="🚀 SEO и Продвижение (180$)", callback_data="srv_SEO_и_Продвижение_180")],
-          [InlineKeyboardButton(text="💎 Комплексный проект VIP (200$)", callback_data="srv_Комплексный_проект_VIP_200")],
+          [InlineKeyboardButton(text="🎨 UI/UX Дизайн макета (20$)", callback_data="srv_UI_UX_Дизайн_макета_20")],
+          [InlineKeyboardButton(text="🌐 Лендинг / Сайт-визитка (50$)", callback_data="srv_Лендинг_Сайт_визитка_50")],
+          [InlineKeyboardButton(text="🤖 Telegram Бот под ключ (80$)", callback_data="srv_Telegram_Бот_под_ключ_80")],
+          [InlineKeyboardButton(text="⚙️ Автоматизация процессов (120$)", callback_data="srv_Автоматизация_процессов_120")],
+          [InlineKeyboardButton(text="⚡ Telegram Mini App (150$)", callback_data="srv_Telegram_Mini_App_150")],
+          [InlineKeyboardButton(text="🛍 Интернет-магазин (200$)", callback_data="srv_Интернет_магазин_200")],
+          [InlineKeyboardButton(text="📊 CRM-система под ключ (300$)", callback_data="srv_CRM_система_под_ключ_300")],
+          [InlineKeyboardButton(text="🛡 Защита и безопасность (500$)", callback_data="srv_Защита_и_безопасность_500")],
+          [InlineKeyboardButton(text="🚀 SEO и Продвижение (1000$)", callback_data="srv_SEO_и_Продвижение_1000")],
           [InlineKeyboardButton(text="⬅️ На главную", callback_data="back_home")],
       ]
   )
@@ -1052,201 +1038,6 @@ async def process_receipt_photo(message: Message, state: FSMContext):
 @router.message(OrderForm.receipt, ~F.photo)
 async def process_receipt_invalid(message: Message):
   await message.answer("⚠️ Пожалуйста, отправьте именно <b>фотографию или скриншот чека</b> (картинкой)!")
-
-
-@router.callback_query(F.data == "start_ads")
-async def process_start_ads(callback: CallbackQuery, state: FSMContext):
-  await state.clear()
-  await state.set_state(AdForm.platform)
-  text = "📢 <b>ПОКУПКА РЕКЛАМЫ И СОТРУДНИЧЕСТВО</b>\n\nВыберите площадку для размещения вашей рекламы:"
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[
-          [InlineKeyboardButton(text="🤖 Реклама в боте", callback_data="adplat_bot")],
-          [InlineKeyboardButton(text="📢 Реклама в канале", callback_data="adplat_channel")],
-          [InlineKeyboardButton(text="⬅️ На главную", callback_data="back_home")],
-      ]
-  )
-  await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="HTML")
-  await callback.answer()
-
-
-@router.callback_query(AdForm.platform, F.data.startswith("adplat_"))
-async def process_ad_platform(callback: CallbackQuery, state: FSMContext):
-  plat_code = callback.data.split("_")[1]
-  platform_name = "Реклама в боте" if plat_code == "bot" else "Реклама в канале"
-  await state.update_data(platform=platform_name, plat_code=plat_code)
-  await state.set_state(AdForm.duration)
-
-  kb_list = [
-      [InlineKeyboardButton(text="24 часа = 5$", callback_data="addur_24h_5")],
-      [InlineKeyboardButton(text="3 дня = 10$", callback_data="addur_3d_10")],
-      [InlineKeyboardButton(text="7 дней = 25$", callback_data="addur_7d_25")],
-      [InlineKeyboardButton(text="30 дней = 100$", callback_data="addur_30d_100")],
-      [InlineKeyboardButton(text="⬅️ Назад", callback_data="start_ads")],
-  ]
-  keyboard = InlineKeyboardMarkup(inline_keyboard=kb_list)
-  text = f"📢 <b>Площадка: {platform_name}</b>\n\n<b>Выберите срок размещения рекламы:</b>"
-
-  await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="HTML")
-  await callback.answer()
-
-
-@router.callback_query(AdForm.duration, F.data.startswith("addur_"))
-async def process_ad_duration(callback: CallbackQuery, state: FSMContext):
-  parts = callback.data.split("_")
-  duration_code = parts[1]
-  price = int(parts[2])
-
-  dur_map = {"24h": "24 часа", "3d": "3 дня", "7d": "7 дней", "30d": "30 дней"}
-  duration_str = dur_map.get(duration_code, duration_code)
-
-  await state.update_data(duration=duration_str, ad_price=price)
-  await state.set_state(AdForm.niche)
-
-  text = (
-      f"📢 <b>Выбрано: {duration_str} — {price}$</b>\n\n"
-      "<b>Шаг 3: Тематика проекта</b>\nВведите тематику или нишу вашего проекта текстом:"
-  )
-  await callback.message.edit_text(text, parse_mode="HTML")
-  await callback.answer()
-
-
-@router.message(AdForm.niche, F.text)
-async def process_ad_niche(message: Message, state: FSMContext):
-  await state.update_data(niche=message.text.strip())
-  await state.set_state(AdForm.link)
-  await message.answer("📢 <b>Шаг 4: Ссылка</b>\n\nВведите ссылку на ваш ресурс или канал:", parse_mode="HTML")
-
-
-@router.message(AdForm.link, F.text)
-async def process_ad_link(message: Message, state: FSMContext):
-  await state.update_data(link=message.text.strip())
-  await state.set_state(AdForm.creative)
-  await message.answer("📢 <b>Шаг 5: Креатив</b>\n\nОтправьте рекламный креатив (изображение, текст или видео):", parse_mode="HTML")
-
-
-@router.message(AdForm.creative)
-async def process_ad_creative(message: Message, state: FSMContext):
-  if message.photo:
-    creative_desc = f"[Фотография] {message.caption or ''}"
-  elif message.video:
-    creative_desc = f"[Видео] {message.caption or ''}"
-  else:
-    creative_desc = message.text or "[Текст]"
-
-  await state.update_data(creative=creative_desc)
-  data = await state.get_data()
-  price = data.get("ad_price", 0)
-
-  text = (
-      "🎉 <b>Рекламная заявка успешно сформирована!</b>\n\n"
-      f"• Площадка: <b>{html.escape(str(data.get('platform')))}</b>\n"
-      f"• Срок: <b>{html.escape(str(data.get('duration')))}</b>\n"
-      f"• Тематика: <b>{html.escape(str(data.get('niche')))}</b>\n"
-      f"• Ссылка: <b>{html.escape(str(data.get('link')))}</b>\n"
-      f"• Креатив: <b>{html.escape(str(creative_desc))}</b>\n\n"
-      f"💵 <b>К оплате: {price}$</b>\n\n"
-      "Нажмите кнопку ниже для выбора способа оплаты 👇"
-  )
-
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[[InlineKeyboardButton(text="💳 Оплатить рекламу", callback_data="ad_pay_select")]]
-  )
-  await message.answer(text, reply_markup=keyboard, parse_mode="HTML")
-
-
-@router.callback_query(F.data == "ad_pay_select")
-async def process_ad_pay_select(callback: CallbackQuery, state: FSMContext):
-  data = await state.get_data()
-  price = data.get("ad_price", 0)
-  text = f"💳 <b>ОПЛАТА РЕКЛАМЫ ({price}$)</b>\n\nВыберите способ оплаты:"
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[
-          [InlineKeyboardButton(text="🔴 USDT (TRC-20)", callback_data="adpay_trc20")],
-          [InlineKeyboardButton(text="🟢 USDT (BEP-20)", callback_data="adpay_bep20")],
-          [InlineKeyboardButton(text="🔵 TON", callback_data="adpay_ton")],
-          [InlineKeyboardButton(text="🟠 Bitcoin (BTC)", callback_data="adpay_btc")],
-          [InlineKeyboardButton(text="🏠 На главную", callback_data="back_home")],
-      ]
-  )
-  await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="HTML")
-  await callback.answer()
-
-
-@router.callback_query(F.data.startswith("adpay_"))
-async def adpay_crypto_handler(callback: CallbackQuery, state: FSMContext):
-  network = callback.data.split("_")[1].upper()
-  data = await state.get_data()
-  price = data.get("ad_price", 0)
-
-  wallets = {
-      "TRC20": "TYd1ekJgTHnFfgAVYXsi7689GaG5oZN3Xe",
-      "BEP20": "0x0A6C6634f8FD920a5E9E0d241CD46d6C15377f39",
-      "TON": "UQDwk7PZoWr0zHv-BItBEGxnq4uyj81z6BlIw74heDgF-Shd",
-      "BTC": "bc1qj7xy0645vcza7l3et5s8nuahllua9a439c0795"
-  }
-  address = wallets.get(network, "")
-
-  text = (
-      f"💳 <b>ОПЛАТА РЕКЛАМЫ ({network})</b>\n\n"
-      f"• <b>Сумма:</b> {price}$\n"
-      f"• <b>Сеть:</b> {network}\n"
-      f"• <b>Реквизиты для оплаты:</b>\n"
-      f"<code>{address}</code>\n\n"
-      "⚠️ <b>ВНИМАНИЕ!</b>\nПереводите строго точную сумму. После оплаты нажмите кнопку ниже и прикрепите чек!"
-  )
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[[InlineKeyboardButton(text="✅ Я оплатил(-а), прикрепить чек", callback_data="ad_ask_receipt")]]
-  )
-  await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="HTML")
-  await callback.answer()
-
-
-@router.callback_query(F.data == "ad_ask_receipt")
-async def ad_ask_receipt(callback: CallbackQuery, state: FSMContext):
-  await state.set_state(AdForm.receipt)
-  text = "🧾 <b>Подтверждение оплаты рекламы</b>\n\nПожалуйста, отправьте в чат <b>фотографию или скриншот чека</b> о переводе."
-  await callback.message.edit_text(text, parse_mode="HTML")
-  await callback.answer()
-
-
-@router.message(AdForm.receipt, F.photo)
-async def process_ad_receipt(message: Message, state: FSMContext):
-  user = message.from_user
-  user_username = f"@{html.escape(user.username)}" if user.username else f"ID: {user.id}"
-  user_full = html.escape(user.full_name) if user.full_name else ""
-  user_info = f"{user_full} ({user_username})" if user_full else user_username
-
-  data = await state.get_data()
-  admin_ad_text = (
-      f"📢 <b>Новая оплата рекламы!</b>\n\n"
-      f"• От кого: {user_info}\n"
-      f"• User ID: <code>{user.id}</code>\n"
-      f"• Площадка: {html.escape(str(data.get('platform')))}\n"
-      f"• Срок: {html.escape(str(data.get('duration')))}\n"
-      f"• Сумма: <b>{data.get('ad_price')}$</b>"
-  )
-  if ADMIN_ID:
-    try:
-      photo_id = message.photo[-1].file_id
-      await message.bot.send_photo(chat_id=ADMIN_ID, photo=photo_id, caption=admin_ad_text, parse_mode="HTML")
-    except Exception as e:
-      logger.error(f"Не удалось отправить оплату рекламы админу: {e}")
-
-  final_text = (
-      "✅ <b>Заявка на рекламу и чек успешно приняты!</b>\n\n"
-      "Ожидайте, модератор проверит поступление средств в течение <b>15 минут</b> и свяжется с вами."
-  )
-  keyboard = InlineKeyboardMarkup(
-      inline_keyboard=[[InlineKeyboardButton(text="🏠 На главную", callback_data="back_home")]]
-  )
-  await message.answer(final_text, reply_markup=keyboard, parse_mode="HTML")
-  await state.clear()
-
-
-@router.message(AdForm.receipt, ~F.photo)
-async def process_ad_receipt_invalid(message: Message):
-  await message.answer("⚠️ Пожалуйста, отправьте именно <b>фотографию чека</b> (картинкой)!")
 
 
 async def handle_ping(request):
