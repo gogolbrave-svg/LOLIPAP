@@ -24,16 +24,19 @@ SAFARIPAY_MERCHANT_ID = os.getenv("SAFARIPAY_MERCHANT_ID")
 SAFARIPAY_API_KEY = os.getenv("SAFARIPAY_API_KEY")
 
 if not BOT_TOKEN:
-  raise ValueError("❌ BOT_TOKEN не найден! Проверьте переменные окружения.")
+  raise ValueError("❌ BOT_TOKEN не найден! Проверьте переменные окружения на Render.")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Подавление предупреждений unclosed connector в aiohttp/asyncio на хостингах
+# Подавление предупреждений unclosed connector
 warnings.filterwarnings("ignore", category=ResourceWarning, message="unclosed connector")
 
 admin_env = os.getenv("ADMIN_ID")
 ADMIN_ID = int(admin_env) if admin_env and admin_env.isdigit() else None
+
+# Глобальная сессия aiohttp для предотвращения ошибок коннектора
+http_session: ClientSession = None
 
 
 class OrderForm(StatesGroup):
@@ -182,9 +185,13 @@ async def run_payment_timer(bot: Bot, chat_id: int, message_id: int, base_text: 
 
 
 async def create_safaripay_invoice(amount: float, method: str) -> str:
+  global http_session
   if not SAFARIPAY_API_KEY:
     logger.error("❌ SAFARIPAY_API_KEY не задан в переменных окружения!")
     return ""
+
+  if not http_session or http_session.closed:
+    http_session = ClientSession()
 
   url = "https://api.safaripay.pro/v1/invoices"
   headers = {"X-API-Key": SAFARIPAY_API_KEY, "Content-Type": "application/json"}
@@ -194,16 +201,15 @@ async def create_safaripay_invoice(amount: float, method: str) -> str:
 
   for attempt in range(1, 4):
     try:
-      async with ClientSession() as session:
-        async with session.post(f"{url}?wait=20", json=payload, headers=headers, timeout=15) as resp:
-          if resp.status in (200, 201):
-            data = await resp.json()
-            link = data.get("link") or data.get("url") or data.get("pay_url", "")
-            if link:
-              return link
-          else:
-            resp_text = await resp.text()
-            logger.warning(f"SafariPay вернул статус {resp.status} на попытке {attempt}: {resp_text}")
+      async with http_session.post(f"{url}?wait=20", json=payload, headers=headers, timeout=15) as resp:
+        if resp.status in (200, 201):
+          data = await resp.json()
+          link = data.get("link") or data.get("url") or data.get("pay_url", "")
+          if link:
+            return link
+        else:
+          resp_text = await resp.text()
+          logger.warning(f"SafariPay вернул статус {resp.status} на попытке {attempt}: {resp_text}")
     except Exception as e:
       logger.error(f"Попытка {attempt}/3 ошибки запроса SafariPay ({method}): {e}")
     
@@ -1258,13 +1264,23 @@ async def start_web_server():
 
 
 async def main():
+  global http_session
+  http_session = ClientSession()
+  
   bot = Bot(token=BOT_TOKEN)
   dp = Dispatcher()
   dp.include_router(router)
+  
   asyncio.create_task(start_web_server())
   asyncio.create_task(scheduled_broadcast(bot))
+  
   await bot.delete_webhook(drop_pending_updates=True)
-  await dp.start_polling(bot)
+  try:
+    await dp.start_polling(bot)
+  finally:
+    if http_session and not http_session.closed:
+      await http_session.close()
+      await asyncio.sleep(0.250)
 
 
 if __name__ == "__main__":
